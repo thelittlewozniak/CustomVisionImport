@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomVisionImport", "CustomVisionImport\CustomVisionImport.csproj", "{0841579F-4F1D-42DE-A4D5-C1F3E262CDEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0841579F-4F1D-42DE-A4D5-C1F3E262CDEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0841579F-4F1D-42DE-A4D5-C1F3E262CDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0841579F-4F1D-42DE-A4D5-C1F3E262CDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0841579F-4F1D-42DE-A4D5-C1F3E262CDEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6172003E-3A77-4521-85C8-245F2A891F89}
+	EndGlobalSection
+EndGlobal
