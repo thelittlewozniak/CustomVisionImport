@@ -21,7 +21,8 @@ namespace CustomVisionImport
             if (await workOnVision.GetTagsFromExport())
                 if (await workOnVision.AddTagsToImport())
                     if(await workOnVision.GetImagesTaggedFromExport())
-                        await workOnVision.InsertImagesIntoImport();
+                        if(await workOnVision.InsertImagesIntoImport())
+                            await workOnVision.TrainTheModelImport();
         }
     }
 }
