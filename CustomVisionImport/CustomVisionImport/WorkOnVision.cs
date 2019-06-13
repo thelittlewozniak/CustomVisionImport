@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CustomVisionImport
@@ -88,16 +89,17 @@ namespace CustomVisionImport
         public async Task<bool> GetImagesTaggedFromExport()
         {
             httpClient.DefaultRequestHeaders.Remove("Training-Key");
-            httpClient.DefaultRequestHeaders.Add("Training-Key", keyImport);
+            httpClient.DefaultRequestHeaders.Add("Training-Key", keyExport);
             imagesFromExport = new List<Image>();
             Console.WriteLine("Retrieve tagged images from the export model");
             try
             {
                 var numberOfImages = await httpClient.GetAsync(urlExport + "/images/tagged/count");
                 var num = JsonConvert.DeserializeObject<int>(await numberOfImages.Content.ReadAsStringAsync());
-                int i = 0;
+                var i = 0;
                 do
                 {
+                    num -= imagesFromExport.Count;
                     var resultHttp = await httpClient.GetAsync(urlExport + "/images/tagged?take=256&skip=" + i * 256);
                     i++;
                     if (!resultHttp.IsSuccessStatusCode)
@@ -108,10 +110,12 @@ namespace CustomVisionImport
                     else
                     {
                         var resultString = await resultHttp.Content.ReadAsStringAsync();
-                        imagesFromExport.AddRange(JsonConvert.DeserializeObject<List<Image>>(resultString));
+                        var data = JsonConvert.DeserializeObject<List<Image>>(resultString);
+                        imagesFromExport.AddRange(data);
                     }
+                    //Thread.Sleep(3000);
                 } while (num > 256);
-                Console.WriteLine(num + " images retrieve from the export model");
+                Console.WriteLine(imagesFromExport.Count + " images retrieve from the export model");
             }
             catch (Exception ex)
             {
@@ -133,13 +137,13 @@ namespace CustomVisionImport
                 };
                 for (int j = 0; j < imagesFromExport[i].Tags.Count; j++)
                 {
-                    newImage.tagsIds.Add(tagsFromImport.FirstOrDefault(t => t.Name == imagesFromExport[i].Tags[j].TagName).Id);
+                    newImage.tagsIds.Add(tagsFromImport.FirstOrDefault(t => t.Name == imagesFromExport[i].Tags[j].TagName)?.Id);
                 }
                 for (int j = 0; j < imagesFromExport[i].Regions.Count; j++)
                 {
                     newImage.Regions.Add(new Region
                     {
-                        TagId = tagsFromImport.FirstOrDefault(t => t.Name == imagesFromExport[i].Regions[j].Tagname).Id,
+                        TagId = tagsFromImport.FirstOrDefault(t => t.Name == imagesFromExport[i].Regions[j].Tagname)?.Id,
                         Left = imagesFromExport[i].Regions[j].Left,
                         Top = imagesFromExport[i].Regions[j].Top,
                         Width = imagesFromExport[i].Regions[j].Width,
@@ -177,10 +181,6 @@ namespace CustomVisionImport
                         Console.WriteLine(resultHttp.StatusCode + " " + resultHttp.ReasonPhrase);
                         return false;
                     }
-                    else
-                    {
-                        var resultString = await resultHttp.Content.ReadAsStringAsync();
-                    }
                 }
                 var data = JsonConvert.SerializeObject(new SendImages
                 {
@@ -197,11 +197,7 @@ namespace CustomVisionImport
                     Console.WriteLine(resultend.StatusCode + " " + resultend.ReasonPhrase);
                     return false;
                 }
-                else
-                {
-                    var resultString = await resultend.Content.ReadAsStringAsync();
-                    Console.WriteLine(imagesFromExport.Count + " of images imported to the import model");
-                }
+                Console.WriteLine(imagesFromExport.Count + " of images imported to the import model");
             }
             catch (Exception ex)
             {
